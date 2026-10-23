@@ -1,0 +1,7 @@
+requests
+scikit-learn
+sentence-transformers
+transformers
+datasets
+evaluate
+ollama
