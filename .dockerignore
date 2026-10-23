@@ -1,0 +1,6 @@
+.git
+.venv
+data/raw
+models
+audit
+__pycache__
