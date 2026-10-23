@@ -1,0 +1,45 @@
+name: MaintainerBot
+
+on:
+  issues:
+    types: [opened]
+
+# least privilege: the bot can only write issues (labels and comments)
+permissions:
+  issues: write
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install transformers sentence-transformers requests huggingface_hub
+
+      - name: Download model from Hugging Face
+        run: python -c "from huggingface_hub import snapshot_download; snapshot_download('shine-sri/maintainerbot-distilbert', local_dir='models/maintainerbot-distilbert')"
+
+      - name: Run MaintainerBot
+        run: python bot/main.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MB_LIVE: ${{ vars.MAINTAINERBOT_LIVE || 'false' }}   # dry-run unless the repo variable is "true"
+          MB_CLS_THRESHOLD: "0.8"
+          MB_DOC_THRESHOLD: "0.7"        # adjust after try_retrieval
+          MB_DOCS_PATH: README.md
+          MB_GEMMA: "off"                # no Ollama on the runner: templated reply
+
+      - name: Upload audit log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-log
+          path: audit/
