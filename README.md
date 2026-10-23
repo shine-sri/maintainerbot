@@ -165,6 +165,16 @@ Also: Hugging Face Transformers, scikit-learn, Streamlit, GitHub Actions, Google
 
 https://huggingface.co/shine-sri/maintainerbot-distilbert
 
+## Try it live
+
+The bot runs on a demo repository, [shine-sri/maintainerbot-demo](https://github.com/shine-sri/maintainerbot-demo), a fictional notes app called TinyNotes. Open an issue there, for example "How do I install TinyNotes on Windows?", and the GitHub Action will:
+
+- label it (`mb:question`, `mb:bug`, and so on),
+- reply from the README if the docs cover it, or
+- comment "Forwarded to maintainer" and add it to the maintainer checklist if they don't.
+
+Everything it adds can be removed with `python bot/undo.py --yes`.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
